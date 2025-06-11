@@ -48,9 +48,13 @@ Working:
 
 
 ## Vidéo de démonstration
+FIRST TRY:
 https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX
+TRY number 2000:
 https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX
+A good demonstrative video:
 https://youtube.com/shorts/d7HRCWKiFtE?si=rqMBNyRJBchXtX6A
+Acceleration:
 https://youtube.com/shorts/WYKy4-q5Adw?si=LnA5E9QnaUxR04ia
 
 
