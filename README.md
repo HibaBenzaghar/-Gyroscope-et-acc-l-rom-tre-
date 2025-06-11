@@ -3,60 +3,84 @@
 Ce projet utilise un module MPU6050 (gyroscope + accéléromètre) pour détecter l’orientation et afficher la direction (haut, bas, gauche, droite) et l'accélération sur un écran LCD I2C 16x2. Il permet de mieux comprendre comment lire et interpréter les données d’un capteur inertiel en temps réel, avec un affichage simple.
 
 
-## Matériel utilisé
 
-- Arduino Uno R3  
-- Module MPU6050 (Gyroscope + Accéléromètre)  
-- Écran LCD 16x2 I2C  
-- Câbles de connexion  
+## Liste des composants
+
+- Arduino Uno  
+- Module IMU MPU6050  
+- Écran LCD 16x2 avec interface I2C  
+- Câbles de connexion (dupont male-male)  
 - Breadboard
-
-
-## Étapes réalisées
-
-### 1. Connexion du matériel
-
-On a d’abord connecté le module MPU6050 à l’Arduino via I2C (SDA sur A4, SCL sur A5).  
-Ensuite, on a connecté l’écran LCD I2C sur les mêmes broches SDA et SCL, en parallèle.
-
-### 2. Importation des bibliothèques
-
-On a ajouté dans le code Arduino les bibliothèques nécessaires pour communiquer avec le MPU6050 (`Wire.h`, `MPU6050.h`) et pour l’écran LCD (`LiquidCrystal_I2C.h`).
-
-### 3. Calibration
-
-On a écrit une fonction pour calculer l’erreur initiale de l’IMU, appelée `calculate_IMU_error()`, afin de corriger les mesures du gyroscope.
-
-### 4. Lecture des données
-
-Dans la boucle principale, on a récupéré les valeurs de l’accélération et de la rotation, et calculé l’angle d’inclinaison en roll et pitch.
-
-### 5. Affichage
-
-On a affiché la direction détectée sur l’écran LCD. Par exemple, si l’inclinaison dépasse un seuil, on affiche “Haut” ou “Bas” selon l’axe.
-
-### 6. Tests et améliorations
-
-Au début, l’affichage était instable. On a amélioré la gestion des erreurs et ajouté un filtre pour stabiliser la lecture.
-
+- Alimentation 5v
 
 ## Schéma électronique
 
-Le schéma électronique est disponible dans le dossier `schematic/`.  
-Il montre les connexions entre l’Arduino, le MPU6050 et l’écran LCD.
+<img width="408" alt="image" src="https://github.com/user-attachments/assets/5713927e-edbf-491a-930d-1074d48480c9" />
 
 
-## Code source
+*Le schéma montre les connexions principales :*  
+- SDA (LCD) → A4 (Arduino)  
+- SCL (LCD) → A5 (Arduino)  
+- VCC (LCD & MPU6050) → 5V Arduino  
+- GND (LCD & MPU6050) → GND Arduino  
+- MPU6050 connecté en I2C sur SDA/SCL Arduino  
 
-Le code complet se trouve dans le dossier `code/`, fichier `sketch.ino`.
+## Explication simple du code
+
+Le code est écrit en Arduino IDE et fait les étapes suivantes :
+
+1. Initialiser la communication I2C avec le module IMU et l’écran LCD.  
+2. Calibrer le gyroscope et l’accéléromètre pour minimiser l’erreur.  
+3. Lire les données brutes du capteur IMU.  
+4. Calculer les angles d’inclinaison (roll, pitch, yaw).  
+5. Afficher les valeurs calculées et la direction (haut/bas) sur l’écran LCD.  
+6. Envoyer les données au port série pour debug (optionnel).  
 
 
-## Photos
+## Photos ou captures d’écran
+Start:
+![WhatsApp Image 2025-06-11 à 15 40 21_0e207a39](https://github.com/user-attachments/assets/9d2e749a-d353-4479-93dd-5cab8e7c77d6)
+Working:
+![WhatsApp Image 2025-06-11 à 15 40 52_00fe378c](https://github.com/user-attachments/assets/73b5fa34-8397-4766-9c18-858dda9c1cdb)
+![WhatsApp Image 2025-06-11 à 15 41 17_761649b7](https://github.com/user-attachments/assets/cc679bfa-6355-4a55-bc95-7ef6c44f8b9a)
+![WhatsApp Image 2025-06-11 à 19 03 23_41e3f92c](https://github.com/user-attachments/assets/048a04b7-573b-472b-a7b6-d8bf74f95b42)
 
-Des photos du montage sont dans le dossier `photos/`.
 
 
-## Conclusion
+## Vidéo de démonstration
 
-Ce projet nous a permis de mieux comprendre la lecture des capteurs inertiels et l’affichage sur un LCD I2C.  
+[Voir la vidéo sur YouTube](https://www.youtube.com/watch?v=example) *(mettre le vrai lien)*
+
+---
+
+## Comment utiliser le projet
+
+1. **Installation du matériel**  
+   - Connecter le module IMU aux broches SDA (A4) et SCL (A5) de l’Arduino.  
+   - Brancher l’écran LCD I2C sur les mêmes broches SDA/SCL.  
+   - Alimenter le circuit en 5V et GND.  
+
+2. **Installation logicielle**  
+   - Installer l’IDE Arduino.  
+   - Installer les bibliothèques nécessaires : `Wire.h`, `LiquidCrystal_I2C.h`, `MPU6050.h` (ou celle que tu utilises).  
+   - Ouvrir le fichier `sketch.ino` (ou `main.ino`).  
+
+3. **Téléversement**  
+   - Sélectionner la carte Arduino Uno dans l’IDE.  
+   - Connecter la carte en USB.  
+   - Compiler et téléverser le code.  
+
+4. **Utilisation**  
+   - Allumer l’Arduino, l’écran LCD doit afficher les directions et l'acceleration.  
+   - Observer les données qui évoluent lorsqu'on bouges le capteur.  
+
+---
+
+## Remarques
+
+- Pour améliorer la précision, on peut ajouter un filtre complémentaire ou un filtre de Kalman.  
+- Ce projet est une base pour intégrer des contrôles de mouvements ou stabilisation.  
+
+
+*Fait avec ❤️ par notre équipe.*
 
