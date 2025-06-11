@@ -1,3 +1,4 @@
+Working code:
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <Adafruit_MPU6050.h>
@@ -59,4 +60,164 @@ void loop() {
   lcd.print(pitch, 1);
 
   delay(500);
+}
+Code performant a 90%:
+#include <Wire.h>                    // Pour la communication I2C
+#include <LiquidCrystal_I2C.h>       // Pour gérer l'écran LCD I2C
+
+const int MPU = 0x68;                // Adresse I2C du MPU6050 (par défaut 0x68)
+
+// Initialisation de l'écran LCD I2C (adresse 0x27, 16 colonnes, 2 lignes)
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// Variables pour les données du capteur
+float AccX, AccY, AccZ;
+float GyroX, GyroY, GyroZ;
+float accAngleX, accAngleY;
+float gyroAngleX, gyroAngleY, gyroAngleZ;
+float roll, pitch, yaw;
+
+// Erreurs de calibration
+float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
+
+// Variables pour le calcul du temps écoulé
+float elapsedTime, currentTime, previousTime;
+int c = 0;
+
+void setup() {
+  Serial.begin(19200);         // Initialisation du port série
+  Wire.begin();                // Démarrer la communication I2C
+  // Réveil du capteur MPU6050 (il est en veille par défaut)
+  Wire.beginTransmission(MPU);
+  Wire.write(0x6B);            // Registre PWR_MGMT_1
+  Wire.write(0x00);            // Mettre à 0 pour sortir du mode veille
+  Wire.endTransmission(true);
+
+  // Initialisation de l'écran LCD
+  lcd.begin(16, 2);
+  lcd.backlight();             // Activer le rétroéclairage
+  lcd.setCursor(0, 0);
+  lcd.print("Initialisation...");
+  delay(1000);
+  lcd.clear();
+
+  // Calibration automatique du capteur
+  calculate_IMU_error();
+  delay(20);
+}
+
+void loop() {
+  // === Lecture des données de l’accéléromètre ===
+  Wire.beginTransmission(MPU);
+  Wire.write(0x3B);                    // Adresse de début pour l'accéléromètre
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU, 6, true);     // Lire 6 registres (X, Y, Z)
+
+  // Convertir les données brutes en valeurs physiques (g)
+  AccX = (Wire.read() << 8 | Wire.read()) / 16384.0;
+  AccY = (Wire.read() << 8 | Wire.read()) / 16384.0;
+  AccZ = (Wire.read() << 8 | Wire.read()) / 16384.0;
+
+  // Calcul des angles roll/pitch avec l'accéléromètre
+  accAngleX = (atan(AccY / sqrt(pow(AccX, 2) + pow(AccZ, 2))) * 180 / PI) - AccErrorX;
+  accAngleY = (atan(-AccX / sqrt(pow(AccY, 2) + pow(AccZ, 2))) * 180 / PI) - AccErrorY;
+
+  // === Lecture des données du gyroscope ===
+  previousTime = currentTime;
+  currentTime = millis();
+  elapsedTime = (currentTime - previousTime) / 1000;
+
+  Wire.beginTransmission(MPU);
+  Wire.write(0x43);                    // Adresse de début pour le gyroscope
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU, 6, true);
+
+  // Convertir les données brutes en valeurs physiques (°/s)
+  GyroX = (Wire.read() << 8 | Wire.read()) / 131.0;
+  GyroY = (Wire.read() << 8 | Wire.read()) / 131.0;
+  GyroZ = (Wire.read() << 8 | Wire.read()) / 131.0;
+
+  // Compensation des erreurs de calibration
+  GyroX = GyroX - GyroErrorX;
+  GyroY = GyroY - GyroErrorY;
+  GyroZ = GyroZ - GyroErrorZ;
+
+  // Calcul des angles avec le gyroscope (intégration)
+  gyroAngleX += GyroX * elapsedTime;
+  gyroAngleY += GyroY * elapsedTime;
+  yaw += GyroZ * elapsedTime;
+
+  // Filtre complémentaire pour fusionner accéléromètre et gyroscope
+  roll = 0.96 * gyroAngleX + 0.04 * accAngleX;
+  pitch = 0.96 * gyroAngleY + 0.04 * accAngleY;
+
+  // === Détection du mouvement de la main ===
+  String direction = "haut";
+
+  if (roll<-40 ) direction = "Avant";
+  else if (roll<80 && roll >60) direction = "Arriere";
+  else if (pitch >15) direction = "Droite";
+  else if (pitch <-15) direction = "Gauche";
+  else if (pitch> 30) direction = "Haut";
+  else if (pitch >120 && roll>100) direction = "Bas";
+
+  // === Affichage sur l'écran LCD ===
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Direction:");
+  lcd.setCursor(0, 1);
+  lcd.print(direction);
+
+  // Debug sur le moniteur série
+  Serial.print("Roll: "); Serial.print(roll);
+  Serial.print(" | Pitch: "); Serial.print(pitch);
+  Serial.print(" | Yaw: "); Serial.println(yaw);
+
+  delay(300); // Pause de lecture
+}
+
+// === Fonction de calibration automatique ===
+void calculate_IMU_error() {
+  // Calibrer accéléromètre
+  while (c < 200) {
+    Wire.beginTransmission(MPU);
+    Wire.write(0x3B);
+    Wire.endTransmission(false);
+    Wire.requestFrom(MPU, 6, true);
+    AccX = (Wire.read() << 8 | Wire.read()) / 16384.0 ;
+    AccY = (Wire.read() << 8 | Wire.read()) / 16384.0 ;
+    AccZ = (Wire.read() << 8 | Wire.read()) / 16384.0 ;
+    AccErrorX += atan(AccY / sqrt(pow(AccX, 2) + pow(AccZ, 2))) * 180 / PI;
+    AccErrorY += atan(-AccX / sqrt(pow(AccY, 2) + pow(AccZ, 2))) * 180 / PI;
+    c++;
+  }
+  AccErrorX /= 200;
+  AccErrorY /= 200;
+  c = 0;
+
+  // Calibrer gyroscope
+  while (c < 200) {
+    Wire.beginTransmission(MPU);
+    Wire.write(0x43);
+    Wire.endTransmission(false);
+    Wire.requestFrom(MPU, 6, true);
+    GyroX = Wire.read() << 8 | Wire.read();
+    GyroY = Wire.read() << 8 | Wire.read();
+    GyroZ = Wire.read() << 8 | Wire.read();
+    GyroErrorX += GyroX / 131.0;
+    GyroErrorY += GyroY / 131.0;
+    GyroErrorZ += GyroZ / 131.0;
+    c++;
+  }
+  GyroErrorX /= 200;
+  GyroErrorY /= 200;
+  GyroErrorZ /= 200;
+
+  // Affichage des erreurs pour information
+  Serial.println("Calibration Terminee:");
+  Serial.print("AccErrorX: "); Serial.println(AccErrorX);
+  Serial.print("AccErrorY: "); Serial.println(AccErrorY);
+  Serial.print("GyroErrorX: "); Serial.println(GyroErrorX);
+  Serial.print("GyroErrorY: "); Serial.println(GyroErrorY);
+  Serial.print("GyroErrorZ: "); Serial.println(GyroErrorZ);
 }
