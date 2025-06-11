@@ -48,10 +48,11 @@ Working:
 
 
 ## Vidéo de démonstration
+https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX
+https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX
+https://youtube.com/shorts/d7HRCWKiFtE?si=rqMBNyRJBchXtX6A
+https://youtube.com/shorts/WYKy4-q5Adw?si=LnA5E9QnaUxR04ia
 
-[Voir la vidéo sur YouTube](https://www.youtube.com/watch?v=example) *(mettre le vrai lien)*
-
----
 
 ## Comment utiliser le projet
 
