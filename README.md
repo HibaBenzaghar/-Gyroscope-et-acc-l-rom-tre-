@@ -1,31 +1,31 @@
 # Projet Gyroscope et Accéléromètre MPU6050
 
-## 🎯 Introduction
+## Introduction
 
 Ce projet utilise un module **MPU6050** (gyroscope + accéléromètre) pour détecter l’orientation et afficher la direction (haut, bas, gauche, droite) ainsi que l'accélération sur un écran **LCD I2C 16x2**.  
 Il permet de mieux comprendre comment lire et interpréter les données d’un **capteur inertiel** en temps réel, avec un affichage simple et pédagogique.
 
 ---
 
-## 🔍 Choix du capteur : MPU6050
+## Choix du capteur : MPU6050
 
 Le **MPU6050** est un capteur IMU (Inertial Measurement Unit) 6 axes qui combine :
 - Un **accéléromètre 3 axes**
 - Un **gyroscope 3 axes**
 
-### 🔧 Caractéristiques principales :
+### Caractéristiques principales :
 - Interface I2C (adresse par défaut : `0x68`)
 - Plage de mesure accéléromètre : ±2g, ±4g, ±8g, ±16g
 - Plage de mesure gyroscope : ±250, ±500, ±1000, ±2000 °/s
 - Tension d’alimentation : 3.3V – 5V
 - Communication stable et rapide avec microcontrôleur
 
-### 📄 Datasheet :
+### Datasheet :
 > 🔗 [Consulter la datasheet du MPU6050 (PDF)](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
 
 ---
 
-## 📦 Liste des composants
+## Liste des composants
 
 - Arduino Uno  
 - Module IMU MPU6050  
@@ -36,7 +36,7 @@ Le **MPU6050** est un capteur IMU (Inertial Measurement Unit) 6 axes qui combine
 
 ---
 
-## 🔌 Schéma électronique
+## Schéma électronique
 
 <img width="408" alt="image" src="https://github.com/user-attachments/assets/5713927e-edbf-491a-930d-1074d48480c9" />
 
@@ -48,20 +48,27 @@ Le **MPU6050** est un capteur IMU (Inertial Measurement Unit) 6 axes qui combine
 
 ---
 
-## 💻 Explication du code
+## Explication du code
 
-Le code (dans `sketch.ino`) fait les étapes suivantes :
+Le code (sketch.ino) réalise les étapes suivantes :
 
-1. Initialise la communication I2C avec le MPU6050 et l’écran LCD.  
-2. Calibre les capteurs pour minimiser l’erreur.  
-3. Lit les données brutes du gyroscope et de l’accéléromètre.  
-4. Calcule les angles d’inclinaison (pitch, roll, yaw).  
-5. Affiche les données sur l’écran LCD 16x2.  
-6. Affiche aussi les valeurs sur le moniteur série (optionnel).  
+Initialise la communication I2C avec le capteur MPU6050 et l’écran LCD.
+
+Configure les plages de mesure du gyroscope et de l’accéléromètre.
+
+Lit les données d’accélération sur les 3 axes (X, Y, Z).
+
+Calcule les angles d’inclinaison (pitch et roll).
+
+Détecte le mouvement selon l’orientation : droite, gauche, avant, arrière ou stable.
+
+Affiche les informations sur l’écran LCD 16x2.
+
+Affiche aussi les données dans le moniteur série (pour debug). 
 
 ---
 
-## 📸 Photos ou captures d’écran
+## Photos ou captures d’écran
 
 **Start**  
 ![Start](https://github.com/user-attachments/assets/9d2e749a-d353-4479-93dd-5cab8e7c77d6)
@@ -73,7 +80,7 @@ Le code (dans `sketch.ino`) fait les étapes suivantes :
 
 ---
 
-## 🎥 Vidéos de démonstration
+## Vidéos de démonstration
 
 - [🎬 Premier essai](https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX)  
 - [🎬 Essai final réussi](https://youtube.com/shorts/d7HRCWKiFtE?si=rqMBNyRJBchXtX6A)  
@@ -81,7 +88,7 @@ Le code (dans `sketch.ino`) fait les étapes suivantes :
 
 ---
 
-## 🛠️ Comment utiliser le projet
+##  Comment utiliser le projet
 
 ### 1. Installation matérielle
 - Connecter le module MPU6050 sur SDA/SCL (A4/A5) de l’Arduino.  
@@ -107,7 +114,7 @@ Le code (dans `sketch.ino`) fait les étapes suivantes :
 
 ---
 
-## 💡 Remarques
+## Remarques
 
 - Pour une lecture plus fluide, on peut intégrer un **filtre complémentaire** ou un **filtre de Kalman**.  
 - Ce projet constitue une base idéale pour des systèmes comme des manettes, des robots équilibrés, ou de la stabilisation.
