@@ -6,13 +6,7 @@ Dans le cadre du challenge TRC2K25, ce projet a pour objectif de concevoir un sy
 
 Le système repose sur le module MPU6050, qui regroupe un gyroscope et un accéléromètre 3 axes, associé à un microcontrôleur Arduino UNO. Le projet couvre plusieurs aspects essentiels des systèmes embarqués :
 
-la sélection et l’intégration d’un capteur inertiel,
-
-la conception d’un circuit électronique simple,
-
-la programmation en C++ avec Arduino pour le traitement des données,
-
-et la mise en œuvre d’une alimentation autonome.
+la sélection et l’intégration d’un capteur inertiel, la conception d’un circuit électronique simple, la programmation en C++ avec Arduino pour le traitement des données et la mise en œuvre d’une alimentation autonome.
 
 Cette réalisation permet de se familiariser avec la lecture et l’interprétation de données capteurs en temps réel, et propose une visualisation claire et pédagogique des mouvements détectés, idéale pour des projets d’initiation à l’IoT, à la robotique, ou à l’interface homme-machine.
 
