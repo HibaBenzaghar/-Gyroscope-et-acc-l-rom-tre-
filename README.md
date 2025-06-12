@@ -47,21 +47,19 @@ Le **MPU6050** est un capteur IMU (Inertial Measurement Unit) 6 axes qui combine
 
 ## Explication du code
 
-Le code (sketch.ino) réalise les étapes suivantes :
+Le code effectue les étapes suivantes :
 
-Initialise la communication I2C avec le capteur MPU6050 et l’écran LCD.
+Initialise la communication I2C avec le capteur MPU6050 et l’écran LCD 16x2.
 
-Configure les plages de mesure du gyroscope et de l’accéléromètre.
+Vérifie si le capteur est bien connecté.
 
-Lit les données d’accélération sur les 3 axes (X, Y, Z).
+Lit les valeurs d’accélération sur les 3 axes (X, Y, Z).
 
-Calcule les angles d’inclinaison (pitch et roll).
+Calcule la norme totale de l’accélération.
 
-Détecte le mouvement selon l’orientation : droite, gauche, avant, arrière ou stable.
+Détecte la direction dominante du mouvement (Gauche, Droite, Avant, Arrière, Haut, Bas, ou Stable).
 
-Affiche les informations sur l’écran LCD 16x2.
-
-Affiche aussi les données dans le moniteur série (pour debug). 
+Affiche la direction détectée et l’intensité de l’accélération sur l’écran LCD.
 
 
 ## Photos ou captures d’écran
