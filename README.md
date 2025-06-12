@@ -88,6 +88,20 @@ Détecte la direction dominante du mouvement (Gauche, Droite, Avant, Arrière, H
 
 Affiche la direction détectée et l’intensité de l’accélération sur l’écran LCD.
 
+## Photos
+
+**Start**  
+![Start](https://github.com/user-attachments/assets/9d2e749a-d353-4479-93dd-5cab8e7c77d6)
+
+**Working**  
+![Working1](https://github.com/user-attachments/assets/73b5fa34-8397-4766-9c18-858dda9c1cdb)  
+![Working2](https://github.com/user-attachments/assets/cc679bfa-6355-4a55-bc95-7ef6c44f8b9a)  
+![Working3](https://github.com/user-attachments/assets/048a04b7-573b-472b-a7b6-d8bf74f95b42)
+
+**Prototype final** 
+![WhatsApp Image 2025-06-12 à 01 42 47_a59e8de9](https://github.com/user-attachments/assets/d09e98fb-51eb-4637-8a00-7452ec714bcc)
+![WhatsApp Image 2025-06-12 à 01 42 47_1ceb12f4](https://github.com/user-attachments/assets/8e4d0327-8772-4716-8a14-df12f8085d69)
+
 
 ## Vidéos de démonstration
 - [🎬 Premier essai](https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX)  
@@ -109,8 +123,9 @@ Affiche la direction détectée et l’intensité de l’accélération sur l’
 - Ajouter les bibliothèques :  
   - `Wire.h`  
   - `LiquidCrystal_I2C.h`  
-  - `MPU6050.h` ou `Adafruit_MPU6050.h` (selon usage)  
+  - `MPU6050.h` ou `Adafruit_MPU6050.h` 
 - Ouvrir `code`.
+- Téléversé le code sur l'arduino.
 
 ### 3. Téléversement
 - Sélectionner la carte Arduino Uno.  
