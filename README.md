@@ -110,9 +110,9 @@ The code performs the following steps:
 - [🎬 First trial](https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX)  
 - [🎬 Final Successful Trial](https://youtube.com/shorts/d7HRCWKiFtE?si=rqMBNyRJBchXtX6A)  
 - [🎬 Acceleration in Motion](https://youtube.com/shorts/WYKy4-q5Adw?si=LnA5E9QnaUxR04ia)  
-- [🎬 Demonstration](https://youtube.com/shorts/AAsT8OWc2lI?si=SOCxGWyvDSOcB6vq)
-- [🎬 Final Demonstration](https://youtube.com/shorts/AAsT8OWc2lI?si=SOCxGWyvDSOcB6vq)
-
+- [🎬 Demo 1](https://youtube.com/shorts/AAsT8OWc2lI?si=SOCxGWyvDSOcB6vq)
+- [🎬 Demo 2](https://youtube.com/shorts/AAsT8OWc2lI?si=SOCxGWyvDSOcB6vq)
+- [🎬 Final Demonstration](https://youtube.com/shorts/AAsT8OWc2lI?si=vX0ZBbOxcTdwuzrz)
 
 ##  How to Use the Project
 
