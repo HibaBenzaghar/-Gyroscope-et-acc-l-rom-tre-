@@ -57,7 +57,7 @@ Rotation in °/s (degrees per second)
 
 ### Datasheet :
 > 🔗 [View the MPU6050 3.4 datasheet (PDF)](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
-> 🔗 [View the MPU6050 4.2 datasheet (PDF)](file:///C:/Users/HP/AppData/Local/Microsoft/Windows/INetCache/IE/QWCI4ZOF/MPU-6000[1].PDF)
+> 🔗 [View the MPU6050 4.2 datasheet (PDF)](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf)
 
 ## Liste des composants
 - Arduino Uno
