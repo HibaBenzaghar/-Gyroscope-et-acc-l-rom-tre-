@@ -26,6 +26,9 @@ Le **MPU6050** est un capteur IMU (Inertial Measurement Unit) 6 axes qui combine
 Pour transmettre les données au microcontrôleur, le MPU6050 utilise le protocole de communication I2C. Ce protocole est simple et efficace, car il ne nécessite que deux fils : la ligne SCL (pour l’horloge) et la ligne SDA (pour les données). Grâce à cette liaison, le microcontrôleur peut envoyer des commandes au capteur et lire ses valeurs en temps réel.
 Pour que le MPU6050 envoie les données, il ne suffit pas de simplement le connecter. Étant donné qu’on utilise une communication I2C, il faut suivre un protocole bien défini :
 Avant de lire une donnée, l’Arduino doit envoyer l’adresse du registre souhaité. Cette adresse indique quel type de donnée on veut (accélération, vitesse angulaire).
+<img width="525" alt="image" src="https://github.com/user-attachments/assets/86f63efa-30d9-48cc-9a36-7b5bf20c1be7" />
+<img width="527" alt="image" src="https://github.com/user-attachments/assets/950e87a8-2212-455f-823d-7ecc61219eb4" />
+
 
 ### Datasheet :
 > 🔗 [Consulter la datasheet du MPU6050 (PDF)](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
