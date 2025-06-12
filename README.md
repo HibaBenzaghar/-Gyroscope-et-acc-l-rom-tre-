@@ -19,15 +19,17 @@ Le **MPU6050** est un capteur IMU (Inertial Measurement Unit) 6 axes qui combine
 - Plage de mesure accéléromètre : ±2g, ±4g, ±8g, ±16g
 - Plage de mesure gyroscope : ±250, ±500, ±1000, ±2000 °/s
 - Tension d’alimentation : 3.3V – 5V
-- 
+  
 ### Principe de fonctionnement :
   Le capteur MPU6050 combine deux fonctions principales : un accéléromètre et un gyroscope. L’accéléromètre permet de mesurer l’accélération linéaire sur les trois axes (X, Y, Z), ce qui permet de détecter les mouvements de la main vers le haut, le bas, la gauche, la droite, l’avant ou l’arrière. De son côté, le gyroscope mesure la vitesse angulaire sur ces mêmes axes, ce qui permet de connaître l’orientation de la main, comme une inclinaison ou une rotation.
 
 Pour transmettre les données au microcontrôleur, le MPU6050 utilise le protocole de communication I2C. Ce protocole est simple et efficace, car il ne nécessite que deux fils : la ligne SCL (pour l’horloge) et la ligne SDA (pour les données). Grâce à cette liaison, le microcontrôleur peut envoyer des commandes au capteur et lire ses valeurs en temps réel.
 Pour que le MPU6050 envoie les données, il ne suffit pas de simplement le connecter. Étant donné qu’on utilise une communication I2C, il faut suivre un protocole bien défini :
 Avant de lire une donnée, l’Arduino doit envoyer l’adresse du registre souhaité. Cette adresse indique quel type de donnée on veut (accélération, vitesse angulaire).
+
 <img width="525" alt="image" src="https://github.com/user-attachments/assets/86f63efa-30d9-48cc-9a36-7b5bf20c1be7" />
 <img width="527" alt="image" src="https://github.com/user-attachments/assets/950e87a8-2212-455f-823d-7ecc61219eb4" />
+
 
 
 ### Datasheet :
