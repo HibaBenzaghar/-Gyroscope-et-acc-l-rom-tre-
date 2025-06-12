@@ -30,11 +30,25 @@ Avant de lire une donnée, l’Arduino doit envoyer l’adresse du registre souh
 <img width="525" alt="image" src="https://github.com/user-attachments/assets/86f63efa-30d9-48cc-9a36-7b5bf20c1be7" />
 <img width="527" alt="image" src="https://github.com/user-attachments/assets/950e87a8-2212-455f-823d-7ecc61219eb4" />
 
+Chaque mesure (accélération ou rotation) est codée sur 16 bits (2 octets) :
+ 8 bits MSB (poids fort)
+8 bits LSB (poids faible)
+Les valeurs sont en complément à deux (signed integer), ce qui permet d'indiquer un sens positif ou négatif du mouvement.
+
+Pour exploiter les mesures, il faut les convertir en unités physiques :
+Accélération en g (gravité terrestre)
+Rotation en °/s (degrés par seconde)
+
+![image](https://github.com/user-attachments/assets/32af0436-8c42-437a-9c0e-ee4a9486035b)
+
+Rotation en °/s (degrés par seconde)
+
+![image](https://github.com/user-attachments/assets/f0270c67-dbc1-4aa4-802a-d2ef67d9eb11)
 
 
 ### Datasheet :
-> 🔗 [Consulter la datasheet du MPU6050 (PDF)](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
-
+> 🔗 [Consulter la datasheet du MPU6050 3.4 (PDF)](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
+> 🔗 [Consulter la datasheet du MPU6050 4.2 (PDF)](file:///C:/Users/HP/AppData/Local/Microsoft/Windows/INetCache/IE/QWCI4ZOF/MPU-6000[1].PDF)
 
 ## Liste des composants
 
@@ -92,11 +106,7 @@ Affiche la direction détectée et l’intensité de l’accélération sur l’
 
 ## Vidéos de démonstration
 
-- [🎬 Premier essai](https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX)  
-- [🎬 Essai final réussi](https://youtube.com/shorts/d7HRCWKiFtE?si=rqMBNyRJBchXtX6A)  
-- [🎬 Accélération en mouvement](https://youtube.com/shorts/WYKy4-q5Adw?si=LnA5E9QnaUxR04ia)  
-- [🎬 Demonstration](https://youtube.com/shorts/AAsT8OWc2lI?si=SOCxGWyvDSOcB6vq)
-- [🎬 Demonstration finale](https://youtube.com/shorts/AAsT8OWc2lI?si=SOCxGWyvDSOcB6vq)
+
 
 ##  Comment utiliser le projet
 
@@ -111,7 +121,7 @@ Affiche la direction détectée et l’intensité de l’accélération sur l’
   - `Wire.h`  
   - `LiquidCrystal_I2C.h`  
   - `MPU6050.h` ou `Adafruit_MPU6050.h` (selon usage)  
-- Ouvrir `sketch.ino`.
+- Ouvrir `code`.
 
 ### 3. Téléversement
 - Sélectionner la carte Arduino Uno.  
@@ -129,4 +139,4 @@ Affiche la direction détectée et l’intensité de l’accélération sur l’
 - Ce projet constitue une base idéale pour des systèmes comme des manettes, des robots équilibrés, ou de la stabilisation.
 
 
-**Fait avec ❤️ par notre équipe.**
+**Fait avec ❤️ par notre équipe d'électronique.**
