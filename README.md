@@ -72,13 +72,17 @@ Affiche la direction détectée et l’intensité de l’accélération sur l’
 ![Working2](https://github.com/user-attachments/assets/cc679bfa-6355-4a55-bc95-7ef6c44f8b9a)  
 ![Working3](https://github.com/user-attachments/assets/048a04b7-573b-472b-a7b6-d8bf74f95b42)
 
+**Prototype final** 
+![WhatsApp Image 2025-06-12 à 01 42 47_a59e8de9](https://github.com/user-attachments/assets/d09e98fb-51eb-4637-8a00-7452ec714bcc)
+![WhatsApp Image 2025-06-12 à 01 42 47_1ceb12f4](https://github.com/user-attachments/assets/8e4d0327-8772-4716-8a14-df12f8085d69)
+
 
 ## Vidéos de démonstration
 
 - [🎬 Premier essai](https://youtube.com/shorts/durMujPbixI?si=PIUfneER4diqM4VX)  
 - [🎬 Essai final réussi](https://youtube.com/shorts/d7HRCWKiFtE?si=rqMBNyRJBchXtX6A)  
 - [🎬 Accélération en mouvement](https://youtube.com/shorts/WYKy4-q5Adw?si=LnA5E9QnaUxR04ia)  
-
+- [🎬 Demonstration finale](https://youtube.com/shorts/AAsT8OWc2lI?si=SOCxGWyvDSOcB6vq)
 
 ##  Comment utiliser le projet
 
