@@ -2,8 +2,19 @@
 
 ## Introduction
 
-Ce projet utilise un module **MPU6050** (gyroscope + accéléromètre) pour détecter l’orientation et afficher la direction (haut, bas, gauche, droite) ainsi que l'accélération sur un écran **LCD I2C 16x2**.  
-Il permet de mieux comprendre comment lire et interpréter les données d’un **capteur inertiel** en temps réel, avec un affichage simple et pédagogique.
+Dans le cadre du challenge TRC2K25, ce projet a pour objectif de concevoir un système embarqué interactif exploitant les données d’un capteur inertiel (accéléromètre + gyroscope) communiquant via le protocole I2C. L’idée centrale est de détecter les mouvements de la main dans différentes directions (haut, bas, gauche, droite, avant, arrière) et d’afficher en temps réel la direction du déplacement ainsi que l’intensité de l’accélération sur un écran LCD 16x2.
+
+Le système repose sur le module MPU6050, qui regroupe un gyroscope et un accéléromètre 3 axes, associé à un microcontrôleur Arduino UNO. Le projet couvre plusieurs aspects essentiels des systèmes embarqués :
+
+la sélection et l’intégration d’un capteur inertiel,
+
+la conception d’un circuit électronique simple,
+
+la programmation en C++ avec Arduino pour le traitement des données,
+
+et la mise en œuvre d’une alimentation autonome.
+
+Cette réalisation permet de se familiariser avec la lecture et l’interprétation de données capteurs en temps réel, et propose une visualisation claire et pédagogique des mouvements détectés, idéale pour des projets d’initiation à l’IoT, à la robotique, ou à l’interface homme-machine.
 
 
 ## Choix du capteur : MPU6050
