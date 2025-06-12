@@ -1,223 +1,95 @@
-Working code:
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
+#include <Wire.h>               // Bibliothèque pour communication I2C
+#include <LiquidCrystal_I2C.h>  // Bibliothèque pour écran LCD I2C
+#include <MPU6050.h>            // Bibliothèque pour capteur MPU6050
 
-Adafruit_MPU6050 mpu;
+// Initialisation écran LCD avec adresse I2C 0x27, 16 colonnes et 2 lignes
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+// Création instance MPU6050
+MPU6050 mpu;
+
+// Variables pour stocker l'accélération en g (gravité)
+float ax, ay, az;
+
+// Norme totale de l'accélération (valeur absolue)
+float accel_norm;
+
+// Seuil d'accélération (en g) pour détecter un mouvement significatif
+const float threshold = 0.2;
+
 void setup() {
-  Serial.begin(115200);
-  Wire.begin();
+  Serial.begin(9600);  // Initialisation communication série à 9600 bauds (pour debug éventuel)
+  Wire.begin();        // Initialisation bus I2C
 
-  if (!mpu.begin()) {
-    Serial.println("Failed to find MPU6050 chip");
-    while (1);
+  lcd.init();          // Initialisation écran LCD
+  lcd.backlight();     // Allumer rétroéclairage LCD
+
+  // Initialisation MPU6050
+  mpu.initialize();
+
+  // Vérification de la connexion avec MPU6050
+  if (!mpu.testConnection()) {
+    lcd.print("MPU6050 error"); // Affiche erreur si capteur non détecté
+    while (1);                  // Bloque le programme ici (boucle infinie)
   }
-
-  mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-  mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
-
-  lcd.init();
-  lcd.backlight();
-}
-
-void loop() {
-  sensors_event_t a, g, temp;
-  mpu.getEvent(&a, &g, &temp);
-
-  // Read accelerometer data
-  float ax = a.acceleration.x;
-  float ay = a.acceleration.y;
-  float az = a.acceleration.z;
-
-  // Compute pitch and roll (in degrees)
-  float pitch = atan2(ax, sqrt(ay * ay + az * az)) * 180.0 / PI;
-  float roll  = atan2(ay, sqrt(ax * ax + az * az)) * 180.0 / PI;
 
   lcd.clear();
-  lcd.setCursor(0, 0);
-
-  // Detect movement based on orientation
-  if (roll > 30) {
-    lcd.print("Mvt: Droite →");
-  } else if (roll < -30) {
-    lcd.print("Mvt: Gauche ←");
-  } else if (pitch > 30) {
-    lcd.print("Mvt: Avant ↑");
-  } else if (pitch < -30) {
-    lcd.print("Mvt: Arriere ↓");
-  } else {
-    lcd.print("Stable");
-  }
-
-  lcd.setCursor(0, 1);
-  lcd.print("Roll:");
-  lcd.print(roll, 1);
-  lcd.print(" P:");
-  lcd.print(pitch, 1);
-
-  delay(500);
-}
-Code performant a 90%:
-#include <Wire.h>                    // Pour la communication I2C
-#include <LiquidCrystal_I2C.h>       // Pour gérer l'écran LCD I2C
-
-const int MPU = 0x68;                // Adresse I2C du MPU6050 (par défaut 0x68)
-
-// Initialisation de l'écran LCD I2C (adresse 0x27, 16 colonnes, 2 lignes)
-LiquidCrystal_I2C lcd(0x27, 16, 2);
-
-// Variables pour les données du capteur
-float AccX, AccY, AccZ;
-float GyroX, GyroY, GyroZ;
-float accAngleX, accAngleY;
-float gyroAngleX, gyroAngleY, gyroAngleZ;
-float roll, pitch, yaw;
-
-// Erreurs de calibration
-float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
-
-// Variables pour le calcul du temps écoulé
-float elapsedTime, currentTime, previousTime;
-int c = 0;
-
-void setup() {
-  Serial.begin(19200);         // Initialisation du port série
-  Wire.begin();                // Démarrer la communication I2C
-  // Réveil du capteur MPU6050 (il est en veille par défaut)
-  Wire.beginTransmission(MPU);
-  Wire.write(0x6B);            // Registre PWR_MGMT_1
-  Wire.write(0x00);            // Mettre à 0 pour sortir du mode veille
-  Wire.endTransmission(true);
-
-  // Initialisation de l'écran LCD
-  lcd.begin(16, 2);
-  lcd.backlight();             // Activer le rétroéclairage
-  lcd.setCursor(0, 0);
-  lcd.print("Initialisation...");
+  lcd.print("MPU6050 OK"); // Confirmation que capteur est prêt
   delay(1000);
   lcd.clear();
-
-  // Calibration automatique du capteur
-  calculate_IMU_error();
-  delay(20);
 }
 
 void loop() {
-  // === Lecture des données de l’accéléromètre ===
-  Wire.beginTransmission(MPU);
-  Wire.write(0x3B);                    // Adresse de début pour l'accéléromètre
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU, 6, true);     // Lire 6 registres (X, Y, Z)
+  // Variables pour stocker les valeurs brutes (raw) lues depuis MPU6050
+  int16_t rawAx, rawAy, rawAz;
 
-  // Convertir les données brutes en valeurs physiques (g)
-  AccX = (Wire.read() << 8 | Wire.read()) / 16384.0;
-  AccY = (Wire.read() << 8 | Wire.read()) / 16384.0;
-  AccZ = (Wire.read() << 8 | Wire.read()) / 16384.0;
+  // Lecture des valeurs d'accélération brute sur 3 axes
+  mpu.getAcceleration(&rawAx, &rawAy, &rawAz);
 
-  // Calcul des angles roll/pitch avec l'accéléromètre
-  accAngleX = (atan(AccY / sqrt(pow(AccX, 2) + pow(AccZ, 2))) * 180 / PI) - AccErrorX;
-  accAngleY = (atan(-AccX / sqrt(pow(AccY, 2) + pow(AccZ, 2))) * 180 / PI) - AccErrorY;
+  // Conversion des valeurs brutes en unités g (gravité)
+  // Selon datasheet, la sensibilité est 16384 LSB/g en mode ±2g
+  ax = rawAx / 16384.0;
+  ay = rawAy / 16384.0;
+  az = rawAz / 16384.0;
 
-  // === Lecture des données du gyroscope ===
-  previousTime = currentTime;
-  currentTime = millis();
-  elapsedTime = (currentTime - previousTime) / 1000;
+  // Calcul de la norme de l'accélération totale vectorielle
+  // sqrt(x² + y² + z²) -> donne l'intensité totale ressentie
+  accel_norm = sqrt(ax * ax + ay * ay + az * az);
 
-  Wire.beginTransmission(MPU);
-  Wire.write(0x43);                    // Adresse de début pour le gyroscope
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU, 6, true);
-
-  // Convertir les données brutes en valeurs physiques (°/s)
-  GyroX = (Wire.read() << 8 | Wire.read()) / 131.0;
-  GyroY = (Wire.read() << 8 | Wire.read()) / 131.0;
-  GyroZ = (Wire.read() << 8 | Wire.read()) / 131.0;
-
-  // Compensation des erreurs de calibration
-  GyroX = GyroX - GyroErrorX;
-  GyroY = GyroY - GyroErrorY;
-  GyroZ = GyroZ - GyroErrorZ;
-
-  // Calcul des angles avec le gyroscope (intégration)
-  gyroAngleX += GyroX * elapsedTime;
-  gyroAngleY += GyroY * elapsedTime;
-  yaw += GyroZ * elapsedTime;
-
-  // Filtre complémentaire pour fusionner accéléromètre et gyroscope
-  roll = 0.96 * gyroAngleX + 0.04 * accAngleX;
-  pitch = 0.96 * gyroAngleY + 0.04 * accAngleY;
-
-  // === Détection du mouvement de la main ===
-  String direction = "haut";
-
-  if (roll<-40 ) direction = "Avant";
-  else if (roll<80 && roll >60) direction = "Arriere";
-  else if (pitch >15) direction = "Droite";
-  else if (pitch <-15) direction = "Gauche";
-  else if (pitch> 30) direction = "Haut";
-  else if (pitch >120 && roll>100) direction = "Bas";
-
-  // === Affichage sur l'écran LCD ===
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Direction:");
-  lcd.setCursor(0, 1);
-  lcd.print(direction);
-
-  // Debug sur le moniteur série
-  Serial.print("Roll: "); Serial.print(roll);
-  Serial.print(" | Pitch: "); Serial.print(pitch);
-  Serial.print(" | Yaw: "); Serial.println(yaw);
-
-  delay(300); // Pause de lecture
-}
-
-// === Fonction de calibration automatique ===
-void calculate_IMU_error() {
-  // Calibrer accéléromètre
-  while (c < 200) {
-    Wire.beginTransmission(MPU);
-    Wire.write(0x3B);
-    Wire.endTransmission(false);
-    Wire.requestFrom(MPU, 6, true);
-    AccX = (Wire.read() << 8 | Wire.read()) / 16384.0 ;
-    AccY = (Wire.read() << 8 | Wire.read()) / 16384.0 ;
-    AccZ = (Wire.read() << 8 | Wire.read()) / 16384.0 ;
-    AccErrorX += atan(AccY / sqrt(pow(AccX, 2) + pow(AccZ, 2))) * 180 / PI;
-    AccErrorY += atan(-AccX / sqrt(pow(AccY, 2) + pow(AccZ, 2))) * 180 / PI;
-    c++;
+  // Détection de la direction dominante en fonction du seuil
+  String direction = "";    // Texte à afficher (direction détectée)
+  if (ax > threshold) { 
+    direction = "Gauche";   // Si acceleration sur axe X positive > seuil
   }
-  AccErrorX /= 200;
-  AccErrorY /= 200;
-  c = 0;
-
-  // Calibrer gyroscope
-  while (c < 200) {
-    Wire.beginTransmission(MPU);
-    Wire.write(0x43);
-    Wire.endTransmission(false);
-    Wire.requestFrom(MPU, 6, true);
-    GyroX = Wire.read() << 8 | Wire.read();
-    GyroY = Wire.read() << 8 | Wire.read();
-    GyroZ = Wire.read() << 8 | Wire.read();
-    GyroErrorX += GyroX / 131.0;
-    GyroErrorY += GyroY / 131.0;
-    GyroErrorZ += GyroZ / 131.0;
-    c++;
+  else if (ax < -threshold) {
+    direction = "Droite";   // Si acceleration sur axe X négative < -seuil
   }
-  GyroErrorX /= 200;
-  GyroErrorY /= 200;
-  GyroErrorZ /= 200;
+  else if (ay > threshold) {
+     direction = "Arriere";  // Si acceleration sur axe Y positive > seuil
+  }
+  else if (ay < -threshold) {
+     direction = "Avant";    // Si acceleration sur axe Y négative < -seuil
+  }
+  else if (az > threshold) {
+    direction = "Haut";      // Si acceleration sur axe Z positive > seuil
+  }
+  else if (az < -threshold) {
+    direction = "Bas";       // Si acceleration sur axe Z négative < -seuil
+  }
+  else {
+    direction = "Stable";    // Si aucune acceleration significative détectée
+  }
+ 
+  // Affichage sur l'écran LCD
+  lcd.clear();              // Efface l'écran à chaque boucle
+  lcd.setCursor(0, 0);      // Position curseur ligne 0, colonne 0
+  lcd.print("Dir: ");       // Affiche label "Direction"
+  lcd.print(direction);     // Affiche la direction détectée
 
-  // Affichage des erreurs pour information
-  Serial.println("Calibration Terminee:");
-  Serial.print("AccErrorX: "); Serial.println(AccErrorX);
-  Serial.print("AccErrorY: "); Serial.println(AccErrorY);
-  Serial.print("GyroErrorX: "); Serial.println(GyroErrorX);
-  Serial.print("GyroErrorY: "); Serial.println(GyroErrorY);
-  Serial.print("GyroErrorZ: "); Serial.println(GyroErrorZ);
+  lcd.setCursor(0, 1);      // Position curseur ligne 1, colonne 0
+  lcd.print("Accel: ");     // Affiche label "Accélération"
+  lcd.print(accel_norm, 2); // Affiche la norme de l'accélération avec 2 décimales
+  lcd.print(" g");          // Affiche unité g (gravité)
+
+  delay(300);               // Pause de 300 ms avant prochaine lecture
 }
